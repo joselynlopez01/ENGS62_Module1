@@ -40,6 +40,7 @@ int main() {
 	 setvbuf(stdin,NULL,_IONBF,0);
 
 	 printf("[Hello]\n");
+	 led_set(4, LED_ON);
 
 	 led_set(0, LED_ON);
 
@@ -80,6 +81,7 @@ int main() {
 	 } while (value != 0);
 
 	 led_set(0, LED_OFF);
+	 led_set(4, LED_OFF);
    cleanup_platform();					/* cleanup the hardware platform */
    return 0;
 }

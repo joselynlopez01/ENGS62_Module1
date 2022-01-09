@@ -21,9 +21,12 @@
 
 #define ALL 0xFFFFFFFF		/* A value designating ALL leds */
 #define OUTPUT 0x0							/* setting GPIO direction to output */
+#define OUTPUTPs 0x1							/* setting GPIOPs direction to output */
 #define CHANNEL1 1							/* channel 1 of the GPIO port */
 
 static XGpio port;
+static XGpioPs portPs;
+
 /*
  * Initialize the led module
  */
@@ -31,6 +34,12 @@ void led_init(void){
 	init_platform();							/* initialize the hardware platform */
 	XGpio_Initialize(&port, XPAR_AXI_GPIO_0_DEVICE_ID);	/* initialize device AXI_GPIO_0 */
 	XGpio_SetDataDirection(&port, CHANNEL1, OUTPUT);	    /* set tristate buffer to output */
+
+	XGpioPs_Config * ConfigPtr;
+	ConfigPtr = XGpioPs_LookupConfig(XPAR_AXI_GPIO_0_DEVICE_ID);
+	XGpioPs_CfgInitialize(&portPs, ConfigPtr, ConfigPtr->BaseAddr);
+	XGpioPs_SetDirectionPin(&portPs, 7, 1);
+	XGpioPs_SetOutputEnablePin(&portPs, 7, 1);
 }
 
 
@@ -65,7 +74,7 @@ void led_set(u32 led, bool tostate){
 		op =  0x8;
 	}
 
-	if(led != ALL){
+	if(led != ALL && led >= 0 && led <= 3){
 		if (tostate == LED_ON){
 			new_value = reg_value | op;
 		} else if (tostate == LED_OFF && led_get(led) == LED_OFF){
@@ -73,9 +82,16 @@ void led_set(u32 led, bool tostate){
 		} else {
 			new_value = reg_value ^ op; //turning if off
 		}
+		XGpio_DiscreteWrite(&port, CHANNEL1, new_value);
 	}
 
-	XGpio_DiscreteWrite(&port, CHANNEL1, new_value);
+	if(led == 4){
+		if (tostate == LED_ON){
+			XGpioPs_WritePin(&portPs, 7, 0x1);
+		} else {
+			XGpioPs_WritePin(&portPs, 7, 0x0);
+		}
+	}
 
 }
 
@@ -132,26 +148,21 @@ void led_toggle(u32 led){
 }
 
 //int main(void){
-//	//XGpio port;									/* GPIO port connected to the leds */
-//
-////	init_platform();							/* initialize the hardware platform */
-////	XGpio_Initialize(&port, XPAR_AXI_GPIO_0_DEVICE_ID);	/* initialize device AXI_GPIO_0 */
-////	XGpio_SetDataDirection(&port, CHANNEL1, OUTPUT);	    /* set tristate buffer to output */
 //	led_init();
 //
 //	bool answer;
 //
-////	led_set(3, LED_ON);
-////	led_set(2, LED_ON);
-////	led_set(0, LED_ON);
-////	led_set(1, LED_ON);
-//	led_set(2, LED_OFF);
-//	led_set(1, LED_OFF);
-//	led_set(0, LED_OFF);
-//	led_set(3, LED_OFF);
-//	led_set(ALL, LED_ON);
-//	led_set(ALL, LED_OFF);
-//
+//	led_set(3, LED_ON);
+//	led_set(2, LED_ON);
+//	led_set(0, LED_ON);
+//	led_set(1, LED_ON);
+////	led_set(2, LED_OFF);
+////	led_set(1, LED_OFF);
+////	led_set(0, LED_OFF);
+////	led_set(3, LED_OFF);
+////	led_set(ALL, LED_ON);
+////	led_set(ALL, LED_OFF);
+////
 ////	answer = led_get(0);
 ////	printf("n\rLED0 is %d\n\r", answer);
 ////	fflush(stdout);
@@ -167,16 +178,18 @@ void led_toggle(u32 led){
 ////	answer = led_get(3);
 ////	printf("LED3 is %d\n\r", answer);
 ////	fflush(stdout);
+////
+////	led_toggle(0);
+////	led_toggle(1);
+////	led_toggle(2);
+////	led_toggle(3);
+////	led_toggle(0);
+////	led_toggle(1);
+////	led_toggle(2);
+////	led_toggle(3);
 //
-//	led_toggle(0);
-//	led_toggle(1);
-//	led_toggle(2);
-//	led_toggle(3);
-//	led_toggle(0);
-//	led_toggle(1);
-//	led_toggle(2);
-//	led_toggle(3);
-//
+//	led_set(4, LED_ON);
+//	led_set(4, LED_OFF);
 //
 //	cleanup_platform();					/* cleanup the hardware platform */
 //	return 0;
