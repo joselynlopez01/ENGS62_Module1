@@ -23,7 +23,7 @@
 #define OUTPUT 0x0							/* setting GPIO direction to output */
 #define CHANNEL1 1							/* channel 1 of the GPIO port */
 
-XGpio port;
+static XGpio port;
 /*
  * Initialize the led module
  */
