@@ -45,13 +45,31 @@ int main() {
 
 
 	 int value = 0;
+	 bool ans;
 
 	 do {
 		 if (strcmp(str, "0") == 0 || strcmp(str, "1") == 0 || strcmp(str, "2") == 0 || strcmp(str, "3") == 0){
-			 printf("[%s]\n\r", str);
+			 //printf("[%s]\n\r", str);
 			 if (strcmp(str, "0") == 0){
 				 led_toggle(0);
+				 ans = led_get(0);
+			 } else if (strcmp(str, "1") == 0){
+				 led_toggle(1);
+				 ans = led_get(1);
+			 } else if (strcmp(str, "2") == 0){
+				 led_toggle(2);
+				 ans = led_get(2);
+			 } else if (strcmp(str, "3") == 0){
+				 led_toggle(3);
+				 ans = led_get(3);
 			 }
+
+			 if (ans == 1){
+				 printf("[%s on]\n\r", str);
+			 } else printf("[%s off]\n\r", str);
+
+			 fflush(stdout);
+
 		 }
 		 printf(">");
 		 fflush(stdout);
