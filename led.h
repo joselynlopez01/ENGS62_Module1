@@ -28,7 +28,7 @@ void led_init(void);
  * <led> is either ALL or a number >= 0
  * Does nothing if <led> is invalid
  */
-void led_set(u32 led, bool tostate);
+void led_set(u32 led, bool tostate, u32 color);
 
 /*
  * Get the status of <led>

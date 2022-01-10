@@ -40,9 +40,9 @@ int main() {
 	 setvbuf(stdin,NULL,_IONBF,0);
 
 	 printf("[Hello]\n");
-	 led_set(4, LED_ON);
+	 led_set(4, LED_ON, 0);
 
-	 led_set(0, LED_ON);
+	 led_set(0, LED_ON, 0);
 
 
 	 int value = 0;
@@ -72,6 +72,18 @@ int main() {
 			 fflush(stdout);
 
 		 }
+
+		 if (strcmp(str, "r") == 0 || strcmp(str, "b") == 0 || strcmp(str, "g") == 0 || strcmp(str, "y") == 0){
+			 if (strcmp(str, "r") == 0){
+				 led_set(6, LED_OFF, 4);
+			 } else if (strcmp(str, "b") == 0){
+				 led_set(6, LED_OFF, 1);
+			 } else if (strcmp(str, "g") == 0){
+				 led_set(6, LED_OFF, 2);
+			 } else if (strcmp(str, "y") == 0){
+				 led_set(6, LED_OFF, 6);
+			 }
+		 }
 		 printf(">");
 		 fflush(stdout);
 		 getLine(str);
@@ -80,8 +92,9 @@ int main() {
 		 value = strcmp(str, "q");
 	 } while (value != 0);
 
-	 led_set(0, LED_OFF);
-	 led_set(4, LED_OFF);
+	 led_set(0, LED_OFF, 0);
+	 led_set(4, LED_OFF, 0);
+	 led_set(6, LED_OFF, 0);
    cleanup_platform();					/* cleanup the hardware platform */
    return 0;
 }
